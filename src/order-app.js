@@ -12,7 +12,7 @@ export default class OrderApp {
     // TODO: 请完成需求指定的功能
     // 优惠价格
     let useDiscount = orderCommandObj.discountCards || []
-    let freePrice01 = useDiscount.length > 0 ? this.getDiscountPrice(orderCommandObj.items || [], useDiscount[0]) : 0
+    let freePrice01 = this.getDiscountPrice(orderCommandObj.items || [], useDiscount[0])
     let isDiscount = freePrice01.isDiscount 
    
     // 封装order对象
@@ -33,7 +33,6 @@ export default class OrderApp {
       totalPrice += parseFloat(singelTotalPrice)
     }
     
-    console.log('isDiscount', isDiscount)
     let currentUsr = users[orderCommandObj.memberId]
     let totalDiscountPrice = freePrice01.disAllPrice
     let receivables = (parseFloat(totalPrice) - parseFloat(totalDiscountPrice))
@@ -67,25 +66,27 @@ export default class OrderApp {
     let isDiscount = false
     for (let i = 0, len = prds.length; i < len; i++) {
       let prdID = prds[i].product
+      let discountPercent = 0
+      let disPrice = 0
       if (products[prdID].discountRules === discount) {
-        let discountPercent = discountRules(discount)
-        let disPrice = (discountPercent * products[prdID].price * prds[i].amount).toFixed(2)
-        let freePrice = getMaxFree(prds[i])
-        let maxPrice = parseFloat(disPrice) > parseFloat(freePrice) ?  parseFloat(disPrice) : parseFloat(freePrice)
-        if (!isDiscount && parseFloat(disPrice) > parseFloat(freePrice)) {
-          isDiscount = true
-        }
-        disAllPrice = parseFloat(disAllPrice) + maxPrice
-        if (maxPrice > 0) {
-          disArr.push(new DiscountItem(
-            {
-              productNo: prdID,
-              productName: products[prdID].name,
-              discount: parseFloat(0 - maxPrice)
-            }
-          ))
-        }
+        discountPercent = discountRules(discount)
       }   
+      disPrice = (discountPercent * products[prdID].price * prds[i].amount).toFixed(2)
+      let freePrice = getMaxFree(prds[i])
+      let maxPrice = parseFloat(disPrice) > parseFloat(freePrice) ? parseFloat(disPrice) : parseFloat(freePrice)
+      if (!isDiscount && parseFloat(disPrice) > parseFloat(freePrice)) {
+        isDiscount = true
+      }
+      disAllPrice = parseFloat(disAllPrice) + maxPrice
+      if (parseFloat(maxPrice) > 0) {
+        disArr.push(new DiscountItem(
+          {
+            productNo: prdID,
+            productName: products[prdID].name,
+            discount: parseFloat(0 - maxPrice)
+          }
+        ))
+      }
     }
     return {
       disAllPrice: disAllPrice,
