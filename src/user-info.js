@@ -42,16 +42,16 @@ export const setMemberPoints = (total, memberNo) => {
     
     // 判断是否升级
     if (users[memberNo].memberPoints < 10000) {
-        users[memberNo].memberType = '普卡'
+        users[memberNo].level = '普卡'
     }
     if (users[memberNo].memberPoints >= 10000 && users[memberNo].memberPoints < 50000) {
-        users[memberNo].memberType = '金卡'
+        users[memberNo].level = '金卡'
     }
     if (users[memberNo].memberPoints >= 50000 && users[memberNo].memberPoints < 100000) {
-        users[memberNo].memberType = '白金卡'
+        users[memberNo].level = '白金卡'
     }
     if (users[memberNo].memberPoints >= 100000) {
-        users[memberNo].memberType = '钻石卡'
+        users[memberNo].level = '钻石卡'
     }
 
     // 积分只增不减

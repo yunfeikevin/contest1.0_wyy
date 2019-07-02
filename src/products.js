@@ -1,29 +1,29 @@
 // 使用打折券优惠的金额
 export const discountRules = (rule) => {
     if (rule === '95折券') {
-        return 0.95
+        return 0.05
     }else if (rule === '9折券') {
-        return 0.9
+        return 0.1
     }else {
-        return 1
+        return 0
     }
 }
 
 // 使用满减活动规则优惠的金额
 export const freeRules = (rule, amount, total, singleP) => {
     if (rule === '每满3000元减350') {        
-        return (Math.floor(total/3000) * 350).toFixed(2)
+        return parseFloat(Math.floor(total/3000) * 350)
     }else if (rule === '每满2000元减30') {
-        return (Math.floor(total/2000) * 30).toFixed(2)
+        return parseFloat(Math.floor(total/2000) * 30)
     }else if (rule === '每满1000元减10') {
-        return (Math.floor(total/1000) * 10).toFixed(2)
+        return parseFloat(Math.floor(total/1000) * 10)
     }else if (rule === '第3件半价') {
         if (amount >= 3) {
-            return singleP * 0.5
+            return parseFloat(singleP) * 0.5
         }
     }else if (rule === '满3送1') {
         if (amount >= 4) {
-            return singleP
+            return parseFloat(singleP)
         }
     }else {
         return 0
@@ -35,11 +35,12 @@ export const freeRules = (rule, amount, total, singleP) => {
 export const getMaxFree = (item) => {
     let prdInfo = products[item.product]
     let singleDisPrice = 0
-    for(let i = 0, len = prdInfo.freeRule; i < len; i++) {
+    for(let i = 0, len = prdInfo.freeRule.length; i < len; i++) {
         let amount = item.amount
         let singleP = prdInfo.price
-        let total = amount * singleP
+        let total = parseFloat(amount) * parseFloat(singleP)
         let tempDisPrice = freeRules(prdInfo.freeRule[i], amount, total, singleP)
+        console.log('tempDisPrice', tempDisPrice)
         if (tempDisPrice > singleDisPrice) {
             singleDisPrice = tempDisPrice
         }
